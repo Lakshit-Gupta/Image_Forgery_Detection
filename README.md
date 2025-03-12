@@ -18,8 +18,8 @@ cd Image_Forgery_Detection
 ```
 
 
-## 📥Dataset Download
-The dataset for this project is available in the **[Releases](https://github.com/Lakshit-Gupta/Image_Forgery_Detection/releases)** section. Click the link to download the dataset.  
+## 📥Dataset And Model Download
+The dataset and model for this project is available in the **[Releases](https://github.com/Lakshit-Gupta/Image_Forgery_Detection/releases)** section. Click the link to download the files.  
 
 ## ⚙️Resolving Dependencies
 If using anaconda use the following command in base(root) terminal of anaconda to resolve all the depedencies
