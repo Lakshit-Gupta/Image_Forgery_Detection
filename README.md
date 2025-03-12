@@ -53,7 +53,7 @@ localhost:8501
 ### GPU Version
 
 ```bash
-docker pull lakshitgupta/forgery_detection_image:v15.0
+docker pull lakshitgupta/forgery_detection_prediction-image:v15.0
 ```
 ```bash
 docker run --gpus all -p 8501:8501 forgery_detection_prediction-image:v15.0
