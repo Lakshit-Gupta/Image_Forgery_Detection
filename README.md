@@ -1,17 +1,69 @@
-# Splicing Forgery Detection using Multi-Feature CNN
-
-## 📌 Project Overview
-
-This project focuses on detecting splicing forgery in images using a convolutional neural network (CNN). The model utilizes forensic features like:
-
-- **Error Level Analysis (ELA)**
-- **Local Noise Variance**
-- **Fourier Transform Magnitude**
-
-These features are extracted and stacked into a three-channel image representation, which is then passed to the CNN for classification.
+#  🖼️Image Forgery Detection using CNN
+This project leverages deep learning techniques to detect splicing forgeries in images. By utilizing **Error Level Analysis (ELA)** for feature extraction and a CNN-based classifier optimized with focal loss, the model effectively identifies manipulated images. It is designed for forensic applications, ensuring reliable detection of image tampering through robust evaluation metrics.
 
 ---
 
+##  💻Run Locally
+
+Clone the project
+
+```bash
+git clone https://github.com/Lakshit-Gupta/Image_Forgery_Detection.git
+```
+
+Go to the project directory
+
+```bash
+cd Image_Forgery_Detection
+```
+
+
+## 📥Dataset Download
+The dataset for this project is available in the **[Releases](https://github.com/Lakshit-Gupta/Image_Forgery_Detection/releases)** section. Click the link to download the dataset.  
+
+## ⚙️Resolving Dependencies
+If using anaconda use the following command in base(root) terminal of anaconda to resolve all the depedencies
+```bash
+conda env create -f tf.yaml ```
+```
+```bash
+conda activate tf ```
+```
+## 🚀How to run the Application
+Open the main_app.py and run the followind command in the Terminal
+```bash
+streamlit run main_app.py  ```
+``` 
+---
+ 
+##  🐳 **Docker Setup**
+
+### CPU Version
+
+```bash
+docker pull lakshitgupta/forgery_detection_image:v14.0
+```
+```bash
+docker run -p 8501:8501 lakshitgupta/forgery_detection_image:v14.0
+```
+Then go to:
+```bash
+localhost:8501
+```
+### GPU Version
+
+```bash
+docker pull lakshitgupta/forgery_detection_image:v15.0
+```
+```bash
+docker run --gpus all -p 8501:8501 forgery_detection_prediction-image:v15.0
+```
+Then go to:
+```bash
+localhost:8501
+```
+
+---
 ## 📂 Dataset
 
 The dataset is split into three categories:
@@ -37,41 +89,35 @@ train_val_test_split_384x384/
 │   ├── tp/
 ```
 
----
 
-## ⚙️ Preprocessing Pipeline
 
-1. **Error Level Analysis (ELA):** Highlights inconsistencies in image compression.
-2. **Local Noise Variance Estimation:** Captures noise inconsistencies between different regions.
-3. **Fourier Transform Analysis:** Detects unnatural frequency patterns in an image.
-4. **Feature Stacking:** Combines the three extracted features into a three-channel image.
 
 ---
 
-## 🚀 Model Architecture
+## 🏗️ Model Architecture
 
-The model is based on **VGG19**, with custom modifications:
+This model uses transfer learning with a **VGG19** backbone, pretrained on ImageNet, to extract features from images. The final classification layers are customized for splicing forgery detection.
 
-- Feature extraction from ELA, noise variance, and Fourier transform.
-- Fully connected layers with dropout to prevent overfitting.
-- Optimizer: **AdamW / RMSprop / SGD with Momentum**
-- Loss Function: **Binary Cross-Entropy / Focal Loss / Dice Loss**
-
+- **Feature Extraction**: Uses Error Level Analysis (ELA) to highlight manipulated regions.
+- **Pretrained Backbone**: VGG19 (transfer learning from ImageNet).
+- **Fully Connected Layers**: Batch normalization and dropout (0.5) for regularization.
+- **Optimizer**: Adam for stable training.
+- **Loss Function**: Focal Loss to handle class imbalance.
 ### 🔹 Model Summary
 
 ```
 Input: (384, 384, 3)
-VGG19 Backbone (Pretrained)
-Fully Connected Layers
+VGG19 Backbone (Pretrained on ImageNet, Transfer Learning)
+Fully Connected Layers (With BatchNorm & Dropout)
 Dropout (0.5)
-Output: Sigmoid Activation
+Output: Sigmoid Activation (Binary Classification)
 ```
 
 ---
 
-## 🔧 Training & Optimization
+## 🎯 Training & Optimization
 
-- **Optimizer Choices:** AdamW, RMSprop, SGD with Momentum
+- **Optimizer Choices:** AdamW(Recommended), RMSprop, SGD with Momentum
 - **Loss Functions Explored:**
   - Binary Cross-Entropy (BCE)
   - Focal Loss (for imbalanced classes)
@@ -80,51 +126,45 @@ Output: Sigmoid Activation
 
 ---
 
-## 📊 Results & Evaluation
+## 📊 Results & Evaluation  
 
-- **Metrics Used:** Accuracy, Precision, Recall, F1-Score
-- **Confusion Matrix Analysis**
-- **Precision-Recall Curve for class imbalance handling**
+The model was evaluated on the **test set**, achieving the following performance:  
 
+| Metric         | Score  |
+|---------------|--------|
+| **Accuracy**  | **96.20%** |
+| **Precision** | **89.00%** |
+| **Recall**    | **89.42%** |
+| **F1-Score**  | **89.21%** |
+
+### 📌 Confusion Matrix  
+The confusion matrix helps in understanding model performance in terms of True Positives (TP), False Positives (FP), True Negatives (TN), and False Negatives (FN):
+| Actual \ Predicted | ✅0 (Authentic) | ❌1 (Tampered) |
+|--------------------|--------------|--------------|
+| **0 (Authentic)** |🟢 952           | 🔴24           |
+| **1 (Tampered)**  |🔴 16           | 🟢192           |
+
+- **🟢True Negative (TN)**: Authentic image correctly classified as authentic.  
+- **🔴False Positive (FP)**: Authentic image misclassified as tampered.  
+- **🔴False Negative (FN)**: Tampered image misclassified as authentic.  
+- **🟢True Positive (TP)**: Tampered image correctly classified as tampered. 
 ---
+## 📌 Future Improvements  
 
-## 🛠 How to Run the Project
-
-### 🔹 Step 1: Install Dependencies
-
-```bash
-pip install tensorflow tensorflow-addons numpy matplotlib seaborn scikit-learn pillow pywavelets opencv-python
-```
-
-### 🔹 Step 2: Prepare Dataset
-
-Ensure your dataset is stored in `train_val_test_split_384x384/` as per the structure mentioned earlier.
-
-### 🔹 Step 3: Run Training Script
-
-```bash
-python train.py
-```
-
-### 🔹 Step 4: Evaluate the Model
-
-```bash
-python evaluate.py
-```
-
----
-
-## 📌 Future Improvements
-
-- **Incorporate PRNU-based noise analysis**
-- **Use attention mechanisms for better localization**
-- **Try contrastive learning for better representation learning**
+- **🖼️ Enhance noise analysis using PRNU-based techniques.**  
+- **🛠️Integrate attention mechanisms for improved localization of forged regions.**  
+- **🔍Explore contrastive learning for improved feature representation.**  
+- **📡Leverage Fourier Transform Analysis for frequency-based anomaly detection.**  
+- **🖌️Incorporate Residual Pixel Analysis (RPA) with Error Level Analysis (ELA).**  
+- **🧩 Refine splicing detection using edge and boundary irregularities.**  
+- **💡Improve model robustness by analyzing lighting and shadow inconsistencies.**  
 
 ---
 
 ## 🤝 Contributors
 
-- **[Your Name]**
+- **[Lakshit Gupta]**
+- **[Manan Goel]**
 
 For any questions, feel free to reach out!
 
